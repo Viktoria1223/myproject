@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/index.css" type="text/css" media="screen" href="main.css">
+    <title>Price</title>
+
+
+    <script>
+        var saleRate = 0.0;
+        var serviceUrl = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5";
+        var DONE = 4
+        var HTTP_OK = 200;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", serviceUrl, true);
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            console.log(xhr.readyState);
+            if (xhr.readyState != DONE) return;
+            if (xhr.status != 200) {
+                alert("PrivatBank is not available.");
+                return;
+            }
+            var response = JSON.parse(xhr.responseText);
+            console.log(response);
+            for (var i = 0; i < response.length; ++i) {
+                if (response[i].ccy == 'USD' && response[i].base_ccy == 'UAH') {
+                    saleRate = parseFloat(response[i].sale);
+                    console.log("saleRate = ", saleRate)
+                    break;
+                }
+            }
+        }
+
+        function onUSDAmountChanged() {
+            var usdText = document.getElementById("money").value;
+            var usd = parseFloat(usdText);
+            var outSpan = document.getElementById("uah");
+            var uahAmount = usd * saleRate;
+            outSpan.innerText = uahAmount;
+        }
+    </script>
+</head>
+
+<body>
+    <div id="moneyform">
+        <label for="money"> USD: </label>
+        <input type="text" id="money" onkeyup="onUSDAmountChanged()"><br />
+        UAH: <span id="uah"></span>
+        <h2>Ціни:</h2>
+        <br>
+        <br>
+        <p>Студійна зйомка - 400 грн (година) </p>
+        <p>Вулична зйомка - 400 грн (година) </p>
+        <p>Вечірня зйомка - 500 грн (година) </p>
+        <p>Репортаж - 300 грн (година) </p>
+        <br>
+        <br>
+        <h3>Весільна зйомка</h3>
+        <p> 1)Ранок нареченої, викуп, вінчання і перший весільний танець - 150 $ </p>
+        <p> 2)Ранок нареченої, викуп, вінчання, перший весільний танець і зйомка до другого застілля - 200 $ </p>
+        <p> 3)Ранок нареченої, викуп, вінчання, перший весільний танець, зйомка до ранку - 250 $ </p>
+        <p> 4)Ранок нареченої, викуп, вінчання, перший весільний танець, зйомка до ранку і післявесільна зйомка - 300 $
+        </p>
+
+    </div>
+</body>
+
+</html>
